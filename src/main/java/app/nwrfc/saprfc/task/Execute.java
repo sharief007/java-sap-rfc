@@ -15,10 +15,9 @@ public class Execute extends Task<JCoFunction> {
     }
 
     @Override
-    protected JCoFunction call() throws Exception {
+    protected JCoFunction call() {
         try {
-            utilities.execute(function);
-            return function;
+            return utilities.execute(function);
         }catch (JCoException ex) {
             throw new RuntimeException(ex);
         }

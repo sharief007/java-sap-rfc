@@ -4,10 +4,6 @@ import app.nwrfc.saprfc.model.ParameterTableModel;
 import app.nwrfc.saprfc.task.Execute;
 import app.nwrfc.saprfc.task.SearchFM;
 import app.nwrfc.saprfc.util.ErrorUtility;
-import app.nwrfc.saprfc.util.MessageUtilities;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoField;
 import com.sap.conn.jco.JCoFunction;
@@ -46,24 +42,21 @@ public class RFController implements Initializable {
     @FXML private TextArea changingOutput;
     @FXML private TextArea tablesOutput;
     @FXML private Button executeBtn;
-//    @FXML private RadioButton json;
-//    @FXML private RadioButton xml;
 
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private ObservableList<ParameterTableModel> functionParameters = null;
     private JCoFunction function = null;
-//    private final ToggleGroup group = new ToggleGroup();
-    private final MessageUtilities messageUtilities = MessageUtilities.getInstance();
 
     @FXML
     public void searchFM() {
         String fm = fmName.getText().trim();
         if (!fm.isEmpty()) {
             SearchFM search = new SearchFM(fm);
+            search.setOnScheduled(e0-> clearInputs());
             search.setOnRunning(e1-> searchBtn.setDisable(true));
             search.setOnCancelled(e2->searchBtn.setDisable(false));
             search.setOnFailed(e3-> {
-                messageUtilities.showErrorMessage(fm+" does not exist");
+                Exception ex = (Exception) search.getException();
+                ErrorUtility.showDetailedError(fm+" Not found",ex.getMessage(),ex);
                 searchBtn.setDisable(false);
             });
             search.setOnSucceeded(e4-> onSearchSuccess(search));
@@ -71,6 +64,22 @@ public class RFController implements Initializable {
             service.submit(search);
             service.shutdown();
         }
+    }
+
+    private void clearInputs() {
+        Platform.runLater(()->{
+            functionParameters = FXCollections.emptyObservableList();
+            importsInput.clear();
+            changingInput.clear();
+            tablesInput.clear();
+        });
+    }
+    private void clearOutputs() {
+        Platform.runLater(()->{
+            exportsOutput.clear();
+            changingOutput.clear();
+            tablesOutput.clear();
+        });
     }
 
     private void onSearchSuccess(Task<JCoFunction> task) {
@@ -93,29 +102,17 @@ public class RFController implements Initializable {
         JCoParameterList changing = function.getChangingParameterList();
         JCoParameterList tables = function.getTableParameterList();
         if (imports != null) {
-//            if (json.isSelected()) {
-                importsInput.setText(imports.toJSON());
-//            } else {
-//                importsInput.setText(imports.toXML());
-//            }
+            importsInput.setText(imports.toJSON());
         } else {
             importsInput.setText("");
         }
         if (changing != null) {
-//            if (json.isSelected()) {
-                changingInput.setText(changing.toJSON());
-//            } else {
-//                changingInput.setText(changing.toXML());
-//            }
+            changingInput.setText(changing.toJSON());
         } else {
             changingInput.setText("");
         }
         if (tables!=null){
-//            if (json.isSelected()) {
-                tablesInput.setText(tables.toJSON());
-//            } else {
-//                tablesInput.setText(tables.toXML());
-//            }
+            tablesInput.setText(tables.toJSON());
         } else {
             tablesInput.setText("");
         }
@@ -195,7 +192,6 @@ public class RFController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-//        initToggleGroup();
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("fieldName"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("fieldType"));
         dataTypeColumn.setCellValueFactory(new PropertyValueFactory<>("dataType"));
@@ -203,11 +199,6 @@ public class RFController implements Initializable {
         structureColumn.setCellValueFactory(f-> f.getValue().isStructureProperty());
         tableColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
         structureColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
-
-       ContextMenu menu = new ContextMenu();
-       MenuItem item = new MenuItem("format");
-       menu.getItems().add(item);
-       
     }
 
     @FXML
@@ -215,6 +206,7 @@ public class RFController implements Initializable {
         if (function!=null) {
             readInputs();
             Execute execute = new Execute(function);
+            execute.setOnScheduled(e0->clearOutputs());
             execute.setOnRunning(e1->executeBtn.setDisable(true));
             execute.setOnFailed(e2->{
                 JCoException ex = (JCoException) execute.getException();
@@ -235,11 +227,8 @@ public class RFController implements Initializable {
 
     private void readInputs() {
         if (!importsInput.getText().trim().isEmpty()){
-//            if (json.isSelected()){
-                function.getImportParameterList().fromJSON(importsInput.getText().trim());
-//            }
-        }
-        if (!changingInput.getText().trim().isEmpty()){
+            function.getImportParameterList().fromJSON(importsInput.getText().trim());
+        }if (!changingInput.getText().trim().isEmpty()){
             function.getChangingParameterList().fromJSON(changingInput.getText().trim());
         }if (!tablesInput.getText().trim().isEmpty()) {
             function.getTableParameterList().fromJSON(tablesInput.getText().trim());
@@ -253,31 +242,12 @@ public class RFController implements Initializable {
         Platform.runLater(()->{
             executeBtn.setDisable(false);
             if (exports!=null){
-//                if (xml.isSelected()) {
-//                    exportsOutput.setText(exports.toXML());
-//                } else {
-                    exportsOutput.setText(gson.toJson(JsonParser.parseString(exports.toJSON())));
-//                }
-            }
-            if (changing!=null) {
-//                if (xml.isSelected()) {
-//                    changingOutput.setText(changing.toXML());
-//                } else {
-                    changingOutput.setText(changing.toJSON());
-//                }
-            }
-            if (tables!=null) {
-//                if (xml.isSelected()) {
-//                    tablesOutput.setText(tables.toXML());
-//                } else {
-                    tablesOutput.setText(tables.toJSON());
-//                }
+                exportsOutput.setText(exports.toJSON());
+            } if (changing!=null) {
+                changingOutput.setText(changing.toJSON());
+            } if (tables!=null) {
+                tablesOutput.setText(tables.toJSON());
             }
         });
     }
-//    private void initToggleGroup() {
-//        json.setToggleGroup(group);
-//        xml.setToggleGroup(group);
-//        json.setSelected(true);
-//    }
 }

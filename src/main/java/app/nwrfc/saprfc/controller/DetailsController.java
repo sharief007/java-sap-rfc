@@ -2,7 +2,6 @@ package app.nwrfc.saprfc.controller;
 
 import app.nwrfc.saprfc.jco.AttributesProvider;
 import app.nwrfc.saprfc.model.KeyValueModel;
-import app.nwrfc.saprfc.util.MessageUtilities;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +17,6 @@ public class DetailsController implements Initializable {
     private ObservableList<KeyValueModel> systemDetailsList = null;
 
     private final AttributesProvider attributesProvider = AttributesProvider.getInstance();
-    private final MessageUtilities messageUtilities = MessageUtilities.getInstance();
     @FXML
     private TableView<KeyValueModel> connectionDetails;
 
@@ -47,7 +45,5 @@ public class DetailsController implements Initializable {
         propValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         connectionDetails.setItems(connectionDetailsList);
         systemDetails.setItems(systemDetailsList);
-
-        messageUtilities.showSuccessMessage("Successfully connected !");
     }
 }

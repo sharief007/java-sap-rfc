@@ -15,6 +15,11 @@ import picocli.CommandLine;
         mixinStandardHelpOptions = true, subcommands = {Login.class, Get.class, Run.class})
 public class App extends Application implements Runnable{
 
+    static {
+        final CustomDestinationDataProvider dataProvider = new CustomDestinationDataProvider();
+        Environment.registerDestinationDataProvider(dataProvider);
+    }
+
     private StageUtilities utilities;
     @Override
     public void init() throws Exception {
@@ -35,8 +40,6 @@ public class App extends Application implements Runnable{
     }
 
     public static void main(String[] args) {
-        CustomDestinationDataProvider dataProvider = new CustomDestinationDataProvider();
-        Environment.registerDestinationDataProvider(dataProvider);
         CommandLine cli = new CommandLine(new App());
         int exitCode = cli.execute(args);
         System.exit(exitCode);

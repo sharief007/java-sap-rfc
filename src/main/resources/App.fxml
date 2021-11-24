@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="720.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.nwrfc.saprfc.controller.AppController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.nwrfc.saprfc.controller.AppController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -25,11 +20,11 @@
                   </Menu>
               <MenuItem mnemonicParsing="false" onAction="#newRfcClient" text="New Rfc client" />
                   <SeparatorMenuItem hideOnClick="true" mnemonicParsing="false" text="Separator" />
-                  <Menu mnemonicParsing="false" text="Export">
+                  <Menu mnemonicParsing="false" text="Export" fx:id="exportMenu" disable="true">
                      <items>
                         <Menu mnemonicParsing="false" text="Inputs">
                            <items>
-                              <MenuItem mnemonicParsing="false" text="Imports" />
+                              <MenuItem mnemonicParsing="false" text="Imports"/>
                               <MenuItem mnemonicParsing="false" text="Changing" />
                               <MenuItem mnemonicParsing="false" text="Tables" />
                            </items>
@@ -51,20 +46,20 @@
           <Menu mnemonicParsing="false" text="View">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#showDetails" text="Show details" />
-                  <Menu mnemonicParsing="false" text="Format">
+                  <Menu mnemonicParsing="false" text="Format" fx:id="formatMenu" disable="true">
                     <items>
                         <Menu mnemonicParsing="false" text="Inputs">
                           <items>
-                              <MenuItem mnemonicParsing="false" text="Imports" />
-                              <MenuItem mnemonicParsing="false" text="Changing" />
-                              <MenuItem mnemonicParsing="false" text="Tables" />
+                              <MenuItem mnemonicParsing="false" text="Imports" onAction="#formatImport"/>
+                              <MenuItem mnemonicParsing="false" text="Changing" onAction="#formatChangingInput" />
+                              <MenuItem mnemonicParsing="false" text="Tables" onAction="#formatTablesInput" />
                           </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Outputs">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="Exports" />
-                              <MenuItem mnemonicParsing="false" text="Changing" />
-                              <MenuItem mnemonicParsing="false" text="Tables" />
+                            <MenuItem mnemonicParsing="false" text="Exports" onAction="#formatExport"/>
+                              <MenuItem mnemonicParsing="false" text="Changing" onAction="#formatChangingOutput"/>
+                              <MenuItem mnemonicParsing="false" text="Tables" onAction="#formatTablesOutput"/>
                           </items>
                         </Menu>
                     </items>
@@ -85,23 +80,4 @@
    <center>
       <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER" />
    </center>
-    <bottom>
-        <HBox alignment="CENTER_LEFT" spacing="3.0" BorderPane.alignment="CENTER">
-            <children>
-            <Label fx:id="messageLabel" graphicTextGap="5.0" layoutX="582.0" layoutY="11.0" text="Failed to connect" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font></Label>
-            <Pane HBox.hgrow="ALWAYS" />
-            <Label fx:id="systemLabel" text="S4S - 100">
-               <HBox.margin>
-                  <Insets left="5.0" right="5.0" />
-               </HBox.margin>
-            </Label>
-            </children>
-            <padding>
-                <Insets left="5.0" />
-            </padding>
-        </HBox>
-    </bottom>
 </BorderPane>

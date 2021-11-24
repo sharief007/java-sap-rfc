@@ -10,7 +10,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
@@ -20,31 +19,17 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class LogOnController implements Initializable {
 
-    @FXML
-    private TextField client;
-
-    @FXML
-    private TextField hostAddress;
-
-    @FXML
-    private Button loginButton;
-
-    @FXML
-    private PasswordField password;
-
-    @FXML
-    private CheckBox rememberMe;
-
-    @FXML
-    private TextField systemNumber;
-
-    @FXML
-    private TextField username;
+    @FXML private TextField client;
+    @FXML private TextField hostAddress;
+    @FXML private Button loginButton;
+    @FXML private PasswordField password;
+    @FXML private TextField systemNumber;
+    @FXML private TextField username;
 
     private final Properties properties = new Properties();
+
     @FXML
     void login() {
         properties.setProperty(DestinationDataProvider.JCO_ASHOST,hostAddress.getText().trim());
@@ -57,18 +42,16 @@ public class LogOnController implements Initializable {
         connectSAP.setOnSucceeded((e1)->{
             JCoAttributes attributes = connectSAP.getValue();
             AttributesProvider.getInstance().setAttributes(attributes);
-            Platform.runLater(()->StageUtilities.getInstance().showApplication(null));
+            Platform.runLater(()->StageUtilities.getInstance().showApplication());
         });
-        connectSAP.setOnRunning((e2)-> loginButton.setDisable(true));
-        connectSAP.setOnCancelled(e3-> loginButton.setDisable(false));
+        connectSAP.setOnRunning((e2)-> Platform.runLater(()->loginButton.setDisable(true)));
+        connectSAP.setOnCancelled(e3-> Platform.runLater(()->loginButton.setDisable(false)));
         connectSAP.setOnFailed(e4->{
            Platform.runLater(()->loginButton.setDisable(false));
-           if (connectSAP.getException() instanceof RuntimeException) {
-               RuntimeException ex = (RuntimeException) connectSAP.getException();
+           if (connectSAP.getException() instanceof RuntimeException ex) {
                ErrorUtility.showDetailedError("Failed to login", null, ex);
            }
         });
-
         ExecutorService service = Executors.newCachedThreadPool();
         service.submit(connectSAP);
         service.shutdown();

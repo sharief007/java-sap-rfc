@@ -1,14 +1,17 @@
 package app.nwrfc.saprfc.controller;
 
-import app.nwrfc.saprfc.util.MessageUtilities;
 import app.nwrfc.saprfc.util.StageUtilities;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import javafx.event.ActionEvent;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,19 +19,10 @@ import java.util.ResourceBundle;
 public class AppController implements Initializable {
 
     private final StageUtilities utilities;
-    private final MessageUtilities messageUtilities = MessageUtilities.getInstance();
-
-//    @FXML
-//    private FontAwesomeIconView messageIcon;
-
-    @FXML
-    private Label messageLabel;
-
-    @FXML
-    private Label systemLabel;
-
-    @FXML
-    private TabPane tabPane;
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    @FXML private TabPane tabPane;
+    @FXML private Menu exportMenu;
+    @FXML private Menu formatMenu;
 
 
     public AppController() {
@@ -36,22 +30,22 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    void about(ActionEvent event) {
+    void about() {
 
     }
 
     @FXML
-    void closeAllTabs(ActionEvent event) {
+    void closeAllTabs() {
         tabPane.getTabs().clear();
     }
 
     @FXML
-    void closeConnection(ActionEvent event) {
-
+    void closeConnection() {
+        utilities.logout();
     }
 
     @FXML
-    void closeTab(ActionEvent event) {
+    void closeTab() {
         Tab tab = tabPane.getSelectionModel().getSelectedItem();
         if (tab!=null) {
             tabPane.getTabs().remove(tab);
@@ -59,28 +53,119 @@ public class AppController implements Initializable {
     }
 
     @FXML
-    void newRfcClient(ActionEvent event) {
+    void newRfcClient() {
         utilities.createNewRfcTab(tabPane);
     }
 
     @FXML
-    void preferences(ActionEvent event) {
+    void preferences() {
 
     }
 
     @FXML
-    void quit(ActionEvent event) {
-
+    void quit() {
+        Window window = tabPane.getScene().getWindow();
+        window.fireEvent(new WindowEvent(window,WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     @FXML
-    void showDetails(ActionEvent event) {
+    void showDetails() {
         utilities.createNewDetailsTab(tabPane);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        messageUtilities.setMessage(messageLabel);
         utilities.createNewDetailsTab(tabPane);
+        tabPane.getSelectionModel().selectedItemProperty().addListener((obs,old,tab) -> {
+            if(tab.getText().trim().equals("Connection")) {
+                Platform.runLater(()->{
+                    exportMenu.setDisable(true);
+                    formatMenu.setDisable(true);
+                });
+            } else {
+                Platform.runLater(()->{
+                    exportMenu.setDisable(false);
+                    formatMenu.setDisable(false);
+                });
+            }
+        });
+    }
+
+    @FXML
+    public void formatImport() {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        BorderPane pane  = (BorderPane) tab.getContent();
+        SplitPane splitPane = (SplitPane) pane.getCenter();
+        TabPane inputSide = (TabPane) splitPane.getItems().get(0);
+        TextArea importInput = (TextArea) inputSide.getTabs().get(1).getContent();
+        if (!importInput.getText().trim().isEmpty()) {
+            JsonElement element = JsonParser.parseString(importInput.getText().trim());
+            Platform.runLater(()->importInput.setText(gson.toJson(element)));
+        }
+    }
+
+    @FXML
+    public void formatChangingInput() {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        BorderPane pane  = (BorderPane) tab.getContent();
+        SplitPane splitPane = (SplitPane) pane.getCenter();
+        TabPane inputSide = (TabPane) splitPane.getItems().get(0);
+        TextArea changingInput = (TextArea) inputSide.getTabs().get(2).getContent();
+        if (!changingInput.getText().trim().isEmpty()) {
+            JsonElement element = JsonParser.parseString(changingInput.getText().trim());
+            Platform.runLater(()->changingInput.setText(gson.toJson(element)));
+        }
+    }
+
+    @FXML
+    public void formatTablesInput() {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        BorderPane pane  = (BorderPane) tab.getContent();
+        SplitPane splitPane = (SplitPane) pane.getCenter();
+        TabPane inputSide = (TabPane) splitPane.getItems().get(0);
+        TextArea tablesInput = (TextArea) inputSide.getTabs().get(3).getContent();
+        if (!tablesInput.getText().trim().isEmpty()) {
+            JsonElement element = JsonParser.parseString(tablesInput.getText().trim());
+            Platform.runLater(()->tablesInput.setText(gson.toJson(element)));
+        }
+    }
+
+    @FXML
+    public void formatExport() {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        BorderPane pane  = (BorderPane) tab.getContent();
+        SplitPane splitPane = (SplitPane) pane.getCenter();
+        TabPane inputSide = (TabPane) splitPane.getItems().get(1);
+        TextArea exportOutput = (TextArea) inputSide.getTabs().get(0).getContent();
+        if (!exportOutput.getText().trim().isEmpty()) {
+            JsonElement element = JsonParser.parseString(exportOutput.getText().trim());
+            Platform.runLater(()->exportOutput.setText(gson.toJson(element)));
+        }
+    }
+
+    @FXML
+    public void formatChangingOutput() {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        BorderPane pane  = (BorderPane) tab.getContent();
+        SplitPane splitPane = (SplitPane) pane.getCenter();
+        TabPane inputSide = (TabPane) splitPane.getItems().get(1);
+        TextArea changingOutput = (TextArea) inputSide.getTabs().get(1).getContent();
+        if (!changingOutput.getText().trim().isEmpty()) {
+            JsonElement element = JsonParser.parseString(changingOutput.getText().trim());
+            Platform.runLater(()->changingOutput.setText(gson.toJson(element)));
+        }
+    }
+
+    @FXML
+    public void formatTablesOutput() {
+        Tab tab = tabPane.getSelectionModel().getSelectedItem();
+        BorderPane pane  = (BorderPane) tab.getContent();
+        SplitPane splitPane = (SplitPane) pane.getCenter();
+        TabPane inputSide = (TabPane) splitPane.getItems().get(1);
+        TextArea tablesOutput = (TextArea) inputSide.getTabs().get(2).getContent();
+        if (!tablesOutput.getText().trim().isEmpty()) {
+            JsonElement element = JsonParser.parseString(tablesOutput.getText().trim());
+            Platform.runLater(()->tablesOutput.setText(gson.toJson(element)));
+        }
     }
 }
