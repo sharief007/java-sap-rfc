@@ -8,12 +8,14 @@ import picocli.CommandLine.Help.Ansi;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.util.Base64;
 import java.util.Properties;
 
 @Command(name = "login", description = "SAP Logon")
 public class Login implements Runnable{
+
+    private final File folder = new File(new File(System.getProperty("user.home")),File.separator+".saprfc");
 
     @Option(names = {"-h","--host"}, description = "SAP Netweaver host address", required = true)
     String hostAddress;
@@ -32,8 +34,8 @@ public class Login implements Runnable{
     @Override
     public void run() {
         initConnectionProperties();
-        saveConnectionProperties();
         try {
+            saveConnectionProperties();
             JCoAttributes attributes = destinationUtilities.ping();
             System.out.println(Ansi.AUTO.string("@|bold,yellow Login Successful !|@"));
             System.out.println(attributes);
@@ -42,14 +44,20 @@ public class Login implements Runnable{
         }
     }
 
-    private void saveConnectionProperties(){
-        try {
-            File destinationProps = new File("./lib/properties.xml");
-            FileOutputStream os = new FileOutputStream(destinationProps);
-            properties.store(os,"ABAP_AS1");
-        } catch (Exception ex) {
-            ErrorUtility.showDetailedError("Failed to save connection details",ex.getMessage(),ex);
+    private void saveConnectionProperties() throws IOException {
+        File file = new File(folder,File.separator+"properties");
+        if (!folder.exists()){
+            folder.mkdirs();
         }
+        FileOutputStream os = new FileOutputStream(file);
+        ByteArrayOutputStream data = new ByteArrayOutputStream();
+        properties.store(data,"SAP_SYS");
+        byte[] encoded = Base64.getEncoder().encode(data.toByteArray());
+        os.write(encoded);
+        os.flush();
+        data.flush();
+        data.close();
+        os.close();
     }
 
     private void initConnectionProperties() {

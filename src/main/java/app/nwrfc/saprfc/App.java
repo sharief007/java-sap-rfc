@@ -2,6 +2,7 @@ package app.nwrfc.saprfc;
 
 import app.nwrfc.saprfc.command.Get;
 import app.nwrfc.saprfc.command.Login;
+import app.nwrfc.saprfc.command.Logout;
 import app.nwrfc.saprfc.command.Run;
 import app.nwrfc.saprfc.jco.CustomDestinationDataProvider;
 import app.nwrfc.saprfc.util.StageUtilities;
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "sap-rfc", description = "SAP RFC Client",
-        mixinStandardHelpOptions = true, subcommands = {Login.class, Get.class, Run.class})
+        mixinStandardHelpOptions = true, subcommands = {Login.class, Get.class, Run.class, Logout.class})
 public class App extends Application implements Runnable{
 
     static {

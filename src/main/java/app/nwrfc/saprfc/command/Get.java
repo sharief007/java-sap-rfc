@@ -49,6 +49,7 @@ public class Get implements Runnable{
            }
            FileWriter writer = new FileWriter(file);
            writer.write(gson.toJson(parameters));
+           System.out.println("Parameters saved to "+ file.getPath());
            writer.flush();
            writer.close();
        } catch (JCoException | IOException ex){
