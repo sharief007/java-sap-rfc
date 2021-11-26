@@ -5,6 +5,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.nwrfc.saprfc.controller.AppController">
@@ -18,54 +19,77 @@
                       <MenuItem mnemonicParsing="false" onAction="#newRfcClient" text="Rfc client" />
                     </items>
                   </Menu>
-              <MenuItem mnemonicParsing="false" onAction="#newRfcClient" text="New Rfc client" />
+              <MenuItem mnemonicParsing="false" onAction="#newRfcClient" text="New Rfc client">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
                   <SeparatorMenuItem hideOnClick="true" mnemonicParsing="false" text="Separator" />
-                  <Menu mnemonicParsing="false" text="Export" fx:id="exportMenu" disable="true">
-                     <items>
-                        <Menu mnemonicParsing="false" text="Inputs">
-                           <items>
-                              <MenuItem mnemonicParsing="false" text="Imports"/>
-                              <MenuItem mnemonicParsing="false" text="Changing" />
-                              <MenuItem mnemonicParsing="false" text="Tables" />
-                           </items>
-                        </Menu>
-                        <Menu mnemonicParsing="false" text="Outputs">
-                           <items>
-                              <MenuItem mnemonicParsing="false" text="Exports" />
-                              <MenuItem mnemonicParsing="false" text="Changing" />
-                              <MenuItem mnemonicParsing="false" text="Tables" />
-                           </items>
-                        </Menu>
-                     </items>
-                  </Menu>
+                  <MenuItem mnemonicParsing="false" onAction="#save" text="Save" fx:id="exportMenu">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="J" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
                   <SeparatorMenuItem hideOnClick="true" mnemonicParsing="false" text="Separator" />
-                  <MenuItem mnemonicParsing="false" onAction="#closeConnection" text="Close connection" />
-                  <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit" />
+                  <MenuItem mnemonicParsing="false" onAction="#closeConnection" text="Close connection">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#quit" text="Quit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#showDetails" text="Show details" />
-                  <Menu mnemonicParsing="false" text="Format" fx:id="formatMenu" disable="true">
+              <MenuItem mnemonicParsing="false" onAction="#showDetails" text="Show details">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <Menu fx:id="formatMenu" disable="true" mnemonicParsing="false" text="Format">
                     <items>
                         <Menu mnemonicParsing="false" text="Inputs">
                           <items>
-                              <MenuItem mnemonicParsing="false" text="Imports" onAction="#formatImport"/>
-                              <MenuItem mnemonicParsing="false" text="Changing" onAction="#formatChangingInput" />
-                              <MenuItem mnemonicParsing="false" text="Tables" onAction="#formatTablesInput" />
+                              <MenuItem mnemonicParsing="false" onAction="#formatImport" text="Imports">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                                 </accelerator></MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#formatChangingInput" text="Changing">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                                 </accelerator></MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#formatTablesInput" text="Tables">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                                 </accelerator></MenuItem>
                           </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Outputs">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="Exports" onAction="#formatExport"/>
-                              <MenuItem mnemonicParsing="false" text="Changing" onAction="#formatChangingOutput"/>
-                              <MenuItem mnemonicParsing="false" text="Tables" onAction="#formatTablesOutput"/>
+                            <MenuItem mnemonicParsing="false" onAction="#formatExport" text="Exports">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="DOWN" code="E" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#formatChangingOutput" text="Changing">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="DOWN" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#formatTablesOutput" text="Tables">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="DOWN" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator></MenuItem>
                           </items>
                         </Menu>
                     </items>
                   </Menu>
-                  <MenuItem mnemonicParsing="false" onAction="#closeTab" text="Close tab" />
-                  <MenuItem mnemonicParsing="false" onAction="#closeAllTabs" text="Close all tabs" />
+                  <MenuItem mnemonicParsing="false" onAction="#closeTab" text="Close tab">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#closeAllTabs" text="Close all tabs">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="More">

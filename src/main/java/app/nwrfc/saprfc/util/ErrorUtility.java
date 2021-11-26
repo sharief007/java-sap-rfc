@@ -2,15 +2,20 @@ package app.nwrfc.saprfc.util;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 public class ErrorUtility {
     public static void showDetailedError(String content, String message, Exception ex){
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getIcons().add(new Image(loadFile("logo.png")));
         alert.setTitle("Exception Dialog");
         alert.setHeaderText(message);
         alert.setContentText(content);
@@ -36,6 +41,10 @@ public class ErrorUtility {
         // Set expandable Exception into the dialog pane.
         alert.getDialogPane().setExpandableContent(expContent);
         alert.showAndWait();
+    }
+    private static InputStream loadFile(String fileName) {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        return classloader.getResourceAsStream(fileName);
     }
 }
 

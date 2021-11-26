@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -65,6 +66,7 @@ public class StageUtilities {
     public void initStage(Stage stage) {
         try {
             this.stage = stage;
+            this.stage.getIcons().add(new Image(loadFile("logo.png")));
             this.stage.setOnCloseRequest(this::handleCloseRequest);
             showLogOn(title);
         } catch (IOException e) {
@@ -105,6 +107,8 @@ public class StageUtilities {
 
     private void handleCloseRequest(WindowEvent windowEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.getIcons().add(new Image(loadFile("logo.png")));
         alert.setHeaderText("Are you sure you want to exit the Application ?");Optional<ButtonType> button = alert.showAndWait();
         button.ifPresentOrElse(buttonType -> {
             if (buttonType.getButtonData().isCancelButton()){
@@ -119,8 +123,10 @@ public class StageUtilities {
     public void logout() {
         try {
             File folder = new File(new File(System.getProperty("user.home")),File.separator+".saprfc");
-            deleteDirectory(folder);
-            folder.delete();
+            if (folder.exists()) {
+                deleteDirectory(folder);
+                folder.delete();
+            }
             showLogOn(title);
         }catch (Exception e){
             ErrorUtility.showDetailedError(null,e.getMessage(),e);

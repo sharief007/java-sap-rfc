@@ -9,8 +9,10 @@ public class Logout implements Runnable{
     @Override
     public void run() {
         File folder = new File(new File(System.getProperty("user.home")),File.separator+".saprfc");
-        deleteDirectory(folder);
-        folder.delete();
+        if (folder.exists()) {
+            deleteDirectory(folder);
+            folder.delete();
+        }
     }
     private void deleteDirectory(File file)
     {
